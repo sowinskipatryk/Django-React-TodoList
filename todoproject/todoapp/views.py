@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 from .serializers import GetTaskSerializer, PostTaskSerializer
 from .models import Task
 
@@ -35,3 +36,7 @@ def get_single_task_or_delete(request, pk):
         return Response(
             'The task with given ID does not exist in the database!',
             status=404)
+
+
+def index(request):
+    return redirect('/todolist')
