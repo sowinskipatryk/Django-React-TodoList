@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Task
-from datetime import datetime
+from django.utils import timezone
 
 
 class GetTaskSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class PostTaskSerializer(serializers.ModelSerializer):
 
         # Set date of completion as current time if task is done but has no date
         elif data.get('done') and not data.get('done_date'):
-            data['done_date'] = datetime.now()  # Add done date if task is ended
+            data['done_date'] = timezone.now()  # Add done date if task is ended
         super().validate(data)  # Perform default validation
         return data
 
