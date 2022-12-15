@@ -9,7 +9,7 @@ from .models import Task
 # View for handling new task creation and retrieving all tasks
 @api_view(['GET', 'POST'])
 def get_tasks_or_create_new(request):
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'PUT':
         request.data['author_ip'] = request.META['REMOTE_ADDR']  # Add IP field
         serializer = PostTaskSerializer(data=request.data)
         if serializer.is_valid():  # Case when validation has passed
@@ -23,13 +23,21 @@ def get_tasks_or_create_new(request):
 
 
 # View for handling task deletion and retrieving a single task with given ID
-@api_view(['GET', 'DELETE'])
+@api_view(['GET', 'DELETE', 'PUT'])
 def get_single_task_or_delete(request, pk):
     try:
         task = Task.objects.get(id=pk)  # Get object with said ID or raise error
         if request.method == 'DELETE':
             task.delete()
             return Response('Task deleted successfully!')
+        elif request.method == 'PUT':
+            serializer = PostTaskSerializer(data=request.data)
+            if serializer.is_valid():  # Case when validation has passed
+                Task.objects.filter(
+                    id=pk).update(title=request.data['title'],
+                                  done=request.data['done'],
+                                  done_date=request.data['done_date'])
+                return Response(serializer.data)
         serializer = GetTaskSerializer(task)
         return Response(serializer.data)
     except ObjectDoesNotExist:  # Raise error if object doesn't exist

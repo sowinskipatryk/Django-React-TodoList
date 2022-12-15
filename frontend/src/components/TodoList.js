@@ -3,12 +3,14 @@ import DoneIcon from '@mui/icons-material/Done';
 import { Button, Paper, Table, TableBody, TableCell, TableContainer,
         TableHead, TableRow, Typography } from '@mui/material';
 import moment from 'moment';
+import Axios from 'axios';
 import { TodoDialog } from './TodoDialog'
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
+  const url = 'http://127.0.0.1:8000/todolist'
   useEffect(() => {
-      fetch('http://127.0.0.1:8000/todolist')
+      fetch(url)
          .then((response) => response.json())
          .then((data) => {
             setTodos(data);
@@ -17,6 +19,14 @@ export default function TodoList() {
             console.log(err.message);
          });
   }, []);
+
+    const taskDelete = (id, e) => {
+        e.preventDefault()
+        Axios.delete(url+"/"+id)
+        .then(res => {
+            console.log("Task deleted:", res.data)
+        })
+    }
 
   return (
     <React.Fragment>
@@ -43,8 +53,8 @@ export default function TodoList() {
               <TableCell>{todo.created_date ? moment(todo.created_date).format('DD.MM.YYYY HH:mm') : null}</TableCell>
               <TableCell>{todo.done_date ? moment(todo.done_date).format('DD.MM.YYYY HH:mm') : null}</TableCell>
               <TableCell>
-                <Button type="submit" variant="contained" sx={{ mr:2 }}>Edit</Button>
-                <Button type="submit" color="error" variant="contained">Delete</Button>
+                <TodoDialog buttonSize="medium" buttonLabel="Edit" dialogTitle="Edit Task" data={todo}></TodoDialog>
+                <Button type="submit" color="error" variant="contained" onClick={e => taskDelete(todo.id, e)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
