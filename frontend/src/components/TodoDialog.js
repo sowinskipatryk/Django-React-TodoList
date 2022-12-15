@@ -68,11 +68,11 @@ export const TodoDialog = (props) => {
         }
     })
 
-    const url = 'http://127.0.0.1:8000/todolist'
+    const url = 'http://127.0.0.1:8000/todolist/'
     const handleSubmit = (e) => {
         e.preventDefault()
         if (editMode) {
-            Axios.put(url+"/"+data.id+"/", {
+            Axios.put(url+data.id+"/", {
                 title: formValues.title,
                 done_date: formValues.done_date,
                 done: formValues.done
@@ -108,8 +108,8 @@ export const TodoDialog = (props) => {
 
 
     return (
-        <div>
-            <Button onClick={initiateForm} type="submit" size={buttonSize} variant="contained" /*error={error}*/ sx={{ mb: 2 }}>{buttonLabel}</Button>
+        <React.Fragment>
+            <Button onClick={initiateForm} type="submit" size={buttonSize} variant="contained" /*error={error}*/ >{buttonLabel}</Button>
             <Dialog open={openDialog} onClose={() => resetFormAndQuit()} maxWidth="md">
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 <DialogContent sx={{ width: 500 }}>
@@ -132,6 +132,6 @@ export const TodoDialog = (props) => {
                     </Box>
                 </DialogContent>
             </Dialog>
-        </div>
+        </React.Fragment>
     )
 }

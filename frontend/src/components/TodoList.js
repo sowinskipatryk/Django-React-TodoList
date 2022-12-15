@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DoneIcon from '@mui/icons-material/Done';
-import { Button, Paper, Table, TableBody, TableCell, TableContainer,
+import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer,
         TableHead, TableRow, Typography } from '@mui/material';
 import moment from 'moment';
 import Axios from 'axios';
@@ -32,7 +32,7 @@ export default function TodoList() {
     <React.Fragment>
     <Typography component="h2" variant="h4" color="primary" mt={2} gutterBottom>TodoList</Typography>
     <TodoDialog buttonSize="large" buttonLabel="Create New Task" dialogTitle="Add Task"></TodoDialog>
-    <TableContainer component={Paper} sx={{width: 'max-content', marginLeft: 'auto', marginRight: 'auto', border: '1px solid rgba(224, 224, 224, 1)'}}>
+    <TableContainer component={Paper} sx={{width: 'max-content', marginLeft: 'auto', marginRight: 'auto', border: '1px solid rgba(224, 224, 224, 1)', marginTop: 2}}>
       <Table sx={{tableLayout: "auto", minWidth: 1200}}>
         <TableHead>
           <TableRow>
@@ -54,7 +54,7 @@ export default function TodoList() {
               <TableCell>{todo.done_date ? moment(todo.done_date).format('DD.MM.YYYY HH:mm') : null}</TableCell>
               <TableCell>
                 <TodoDialog buttonSize="medium" buttonLabel="Edit" dialogTitle="Edit Task" data={todo}></TodoDialog>
-                <Button type="submit" color="error" variant="contained" onClick={e => taskDelete(todo.id, e)}>Delete</Button>
+                <Button type="submit" color="error" variant="contained" onClick={e => taskDelete(todo.id, e)} sx={{ marginLeft: 2 }}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
