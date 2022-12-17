@@ -1,9 +1,11 @@
-import { Box, Button, Checkbox, Dialog, DialogTitle, DialogContent, FormControlLabel, FormGroup, TextField } from '@mui/material';
+import { Box, Button, Checkbox, Dialog, DialogTitle, DialogContent,
+         FormControlLabel, FormGroup, TextField } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Axios from 'axios';
+import _ from 'lodash';
 
 const initialFormValues = {
     title: '',
@@ -12,7 +14,7 @@ const initialFormValues = {
 }
 
 export const TodoDialog = (props) => {
-    const {buttonSize, buttonLabel, dialogTitle, data} = props
+    const {buttonSize, buttonLabel, dialogTitle, todo, todos} = props
     const [openDialog, setOpenDialog] = useState(false)
     const [formValues, setFormValues] = useState(initialFormValues)
     const [editMode, setEditMode] = useState(false)
@@ -43,17 +45,15 @@ export const TodoDialog = (props) => {
 */
 
     const initiateForm = () => {
-        if (data != null)
+        if (todo != null)
         {
-            setFormValues(data)
+            setFormValues(todo)
+            setEditMode(true)
         } else {
             setFormValues(initialFormValues)
+            setEditMode(false)
         }
         setOpenDialog(true)
-
-        console.log('editMode:', editMode)
-        console.log('openDialog:', openDialog)
-        console.log('data:', data)
     }
 
     const resetFormAndQuit = () => {
@@ -71,8 +71,14 @@ export const TodoDialog = (props) => {
     const url = 'http://127.0.0.1:8000/todolist/'
     const handleSubmit = (e) => {
         e.preventDefault()
+/*        const taskId = _.findIndex(todos, { 'id': todo.id });
+        todos[taskId]['title'] = formValues.title
+        todos[taskId]['done_date'] = formValues.done_date
+        todos[taskId]['done'] = formValues.done
+*/
+
         if (editMode) {
-            Axios.put(url+data.id+"/", {
+            Axios.put(url+todo.id+"/", {
                 title: formValues.title,
                 done_date: formValues.done_date,
                 done: formValues.done
@@ -98,14 +104,6 @@ export const TodoDialog = (props) => {
         else window.alert('Form invalid')
 */
         }
-
-    useEffect(() => {
-        if (data != null)
-        {
-            setEditMode(true)
-        }
-    }, [data])
-
 
     return (
         <React.Fragment>
