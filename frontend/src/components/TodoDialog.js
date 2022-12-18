@@ -1,12 +1,11 @@
+import React, { useState } from 'react';
 import { Box, Button, Checkbox, Dialog, DialogTitle, DialogContent,
          FormControlLabel, FormGroup, TextField } from '@mui/material';
-import React, { useState, useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Axios from 'axios';
 import _ from 'lodash';
-import uniqid from 'uniqid';
 
 const initialFormValues = {
     title: '',
@@ -19,11 +18,6 @@ export const TodoDialog = (props) => {
     const [openDialog, setOpenDialog] = useState(false)
     const [formValues, setFormValues] = useState(initialFormValues)
     const [editMode, setEditMode] = useState(false)
-
-/*
-    const [formErrors, setFormErrors] = useState(null)
-    const error = null
-*/
 
     const handleInputChange = e => {
         const { name, value } = e.target
@@ -109,7 +103,7 @@ export const TodoDialog = (props) => {
 
     return (
         <React.Fragment>
-            <Button onClick={initiateForm} type="submit" size={buttonSize} variant="contained" /*error={error}*/ >{buttonLabel}</Button>
+            <Button onClick={initiateForm} type="submit" size={buttonSize} variant="contained" >{buttonLabel}</Button>
             <Dialog open={openDialog} onClose={() => resetFormAndQuit()} maxWidth="md">
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 <DialogContent sx={{ width: 500 }}>
