@@ -23,4 +23,4 @@ class PostTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('title', 'done', 'done_date', 'author_ip')  # Limit fields
+        fields = ('id', 'title', 'done', 'done_date', 'author_ip')  # Limit fields

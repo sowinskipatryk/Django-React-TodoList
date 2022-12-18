@@ -6,6 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Axios from 'axios';
 import _ from 'lodash';
+import uniqid from 'uniqid';
 
 const initialFormValues = {
     title: '',
@@ -14,7 +15,7 @@ const initialFormValues = {
 }
 
 export const TodoDialog = (props) => {
-    const {buttonSize, buttonLabel, dialogTitle, todo, todos} = props
+    const {buttonSize, buttonLabel, dialogTitle, todo, todos, setTodos} = props
     const [openDialog, setOpenDialog] = useState(false)
     const [formValues, setFormValues] = useState(initialFormValues)
     const [editMode, setEditMode] = useState(false)
@@ -31,18 +32,6 @@ export const TodoDialog = (props) => {
             [name]: value
             })
     }
-/*
-    const validateForm = () => {
-        let temp = {}
-        temp.title = formValues.title ? "" : "This field is required"
-        temp.done_date = (formValues.done_date < new Date()) ? "" : "Done date cannot be later than the current date"
-        setFormErrors({
-            ...temp
-        })
-
-        return Object.values(temp).every(x => x == "")
-    }
-*/
 
     const initiateForm = () => {
         if (todo != null)
@@ -71,11 +60,6 @@ export const TodoDialog = (props) => {
     const url = 'http://127.0.0.1:8000/todolist/'
     const handleSubmit = (e) => {
         e.preventDefault()
-/*        const taskId = _.findIndex(todos, { 'id': todo.id });
-        todos[taskId]['title'] = formValues.title
-        todos[taskId]['done_date'] = formValues.done_date
-        todos[taskId]['done'] = formValues.done
-*/
 
         if (editMode) {
             Axios.put(url+todo.id+"/", {
@@ -84,7 +68,21 @@ export const TodoDialog = (props) => {
                 done: formValues.done
             })
             .then(res => {
-                console.log(res.data)
+                if (res.status == "200")
+                {
+                    const taskId = _.findIndex(todos, { 'id': todo.id });
+                    todos[taskId]['title'] = formValues.title
+                    if (formValues.done_date)
+                    {
+                    todos[taskId]['done_date'] = new Date(formValues.done_date)
+                    }
+                    else
+                    {
+                    todos[taskId]['done_date'] = ""
+                    }
+                    todos[taskId]['done'] = formValues.done
+                    setTodos(_.clone(todos))
+                }
             })
         } else {
             Axios.post(url, {
@@ -93,16 +91,20 @@ export const TodoDialog = (props) => {
                 done: formValues.done
             })
             .then(res => {
-                console.log(res.data)
+                const copyTodos = _.clone(todos)
+                copyTodos.push({
+                    'id': res.data.id,
+                    'title': formValues.title,
+                    'created_date': new Date(),
+                    'done_date': formValues.done_date ? new Date(formValues.done_date) : "",
+                    'done': formValues.done,
+                    'author_ip': res.data.author_ip
+                })
+                setTodos(copyTodos)
             })
         }
 
         resetFormAndQuit()
-/*
-        if (validateForm())
-        window.alert('Form is valid')
-        else window.alert('Form invalid')
-*/
         }
 
     return (

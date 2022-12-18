@@ -38,6 +38,10 @@ def get_single_task_or_delete(request, pk):
                                   done=request.data['done'],
                                   done_date=request.data['done_date'])
                 return Response(serializer.data)
+            else:
+                return Response(
+                    'Incorrect data was entered to modify the task!',
+                    status=404)
         serializer = GetTaskSerializer(task)
         return Response(serializer.data)
     except ObjectDoesNotExist:  # Raise error if object doesn't exist
